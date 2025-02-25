@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Phone, LogIn, LayoutDashboard } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../lib/auth';
+import SimpleLanguageSelector from './SimpleLanguageSelector';
 
 export default function Navbar() {
   const { t, i18n } = useTranslation();
@@ -17,11 +18,10 @@ export default function Navbar() {
     { path: '/products', label: 'nav.products' },
     { path: '/blog', label: 'nav.blog' },
     { path: '/contact', label: 'nav.contact' },
+    // Only show test page in development
+    ...(import.meta.env.DEV ? [{ path: '/test', label: 'Test Translations' }] : []),
   ];
 
-  const toggleLanguage = () => {
-    i18n.changeLanguage(i18n.language === 'en' ? 'es' : 'en');
-  };
 
   return (
     <motion.nav 
@@ -87,12 +87,7 @@ export default function Navbar() {
               </motion.button>
             )}
 
-            <button
-              onClick={toggleLanguage}
-              className="px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm font-medium"
-            >
-              {i18n.language === 'en' ? 'ES' : 'EN'}
-            </button>
+            <SimpleLanguageSelector />
             
             <a
               href="tel:1-786-380-8750"

@@ -67,26 +67,85 @@ export const deleteCategory = (id: number) => api.delete(`/api/categories/${id}/
 // Products
 export const getProducts = () => api.get('/api/products/');
 export const getProduct = (id: number) => api.get(`/api/products/${id}/`);
-export const createProduct = (data: FormData) => api.post('/api/products/', data, {
-  headers: { 'Content-Type': 'multipart/form-data' }
-});
+export const createProduct = (data: FormData) => {
+  console.log('Creating product:', {
+    formData: Object.fromEntries(data.entries())
+  });
+
+  const imageFile = data.get('image');
+  if (imageFile instanceof File) {
+    console.log('Image file details:', {
+      name: imageFile.name,
+      type: imageFile.type,
+      size: imageFile.size,
+      lastModified: new Date(imageFile.lastModified).toISOString()
+    });
+  } else {
+    console.log('No image file present in FormData');
+  }
+
+  return api.post('/api/products/', data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Accept: 'application/json',
+    },
+  }).then(response => {
+    console.log('Create product success:', {
+      status: response.status,
+      data: response.data
+    });
+    return response;
+  }).catch(error => {
+    console.error('Create product error:', {
+      status: error.response?.status,
+      data: error.response?.data,
+      headers: error.response?.headers
+    });
+    throw error;
+  });
+};
 export const updateProduct = (id: number, data: FormData) => {
   // Ensure ID is a number and convert to string
   const productId = String(parseInt(String(id), 10));
   
-  // Log request details
+  // Log request details before sending
   console.log('Updating product:', {
     id: productId,
     originalId: id,
     formData: Object.fromEntries(data.entries())
   });
   
-  // Make the request
-  return api.patch(`/api/products/${productId}/`, data).catch(error => {
+  // Log the image file if present
+  const imageFile = data.get('image');
+  if (imageFile instanceof File) {
+    console.log('Image file details:', {
+      name: imageFile.name,
+      type: imageFile.type,
+      size: imageFile.size,
+      lastModified: new Date(imageFile.lastModified).toISOString()
+    });
+  } else {
+    console.log('No image file present in FormData');
+  }
+  
+  // Make the request with explicit headers
+  return api.patch(`/api/products/${productId}/`, data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Accept: 'application/json',
+    },
+  }).then(response => {
+    console.log('Update product success:', {
+      status: response.status,
+      data: response.data
+    });
+    return response;
+  }).catch(error => {
     console.error('Update product error:', {
       status: error.response?.status,
       data: error.response?.data,
-      id: productId
+      id: productId,
+      headers: error.response?.headers
     });
     throw error;
   });

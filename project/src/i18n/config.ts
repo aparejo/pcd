@@ -287,7 +287,15 @@ const resources = {
       'footer.services.advice': 'Specialized Technical Advice',
       'footer.follow': 'Follow Us',
       'footer.copyright': '© 2024 PCD Services LLC. All rights reserved.',
-      'footer.developed': 'Developed by'
+      'footer.developed': 'Developed by',
+      // Form translations
+      'form.name': 'Name',
+      'form.phone': 'Phone',
+      'form.company': 'Company',
+      'form.email': 'Email',
+      'form.comments': 'Comments',
+      'form.cancel': 'Cancel',
+      'form.submit': 'Submit'
     }
   },
   es: {
@@ -575,18 +583,45 @@ const resources = {
       'footer.services.advice': 'Asesoría Técnica Especializada',
       'footer.follow': 'Síguenos',
       'footer.copyright': '© 2024 PCD Services LLC. Todos los derechos reservados.',
-      'footer.developed': 'Desarrollado por'
+      'footer.developed': 'Desarrollado por',
+      // Form translations
+      'form.name': 'Nombre',
+      'form.phone': 'Teléfono',
+      'form.company': 'Empresa',
+      'form.email': 'Correo electrónico',
+      'form.comments': 'Comentarios',
+      'form.cancel': 'Cancelar',
+      'form.submit': 'Enviar'
     }
   }
 };
 
-i18n.use(initReactI18next).init({
-  resources,
-  lng: 'en',
-  fallbackLng: 'en',
-  interpolation: {
-    escapeValue: false
-  }
-});
+const initI18n = () => {
+  const browserLang = navigator.language.split('-')[0];
+  const defaultLang = ['en', 'es'].includes(browserLang) ? browserLang : 'en';
+
+  i18n.use(initReactI18next).init({
+    resources,
+    lng: defaultLang,
+    fallbackLng: 'en',
+    interpolation: {
+      escapeValue: false
+    },
+    debug: true // Enable debug mode to see more detailed logs
+  });
+
+  // Log initialization details
+  console.log('i18n initialized with:', {
+    detectedLanguage: browserLang,
+    currentLanguage: i18n.language,
+    availableLanguages: Object.keys(resources),
+    testTranslations: {
+      en_name: i18n.t('form.name', { lng: 'en' }),
+      es_name: i18n.t('form.name', { lng: 'es' })
+    }
+  });
+};
+
+initI18n();
 
 export default i18n;

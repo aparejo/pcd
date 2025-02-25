@@ -65,14 +65,30 @@ export default function AddProductModal({ onClose, onSuccess }: AddProductModalP
 
       // Only append image if one was selected
       if (data.image && data.image.length > 0) {
-        formData.append('image', data.image[0]);
+        const imageFile = data.image[0];
+        console.log('Image file selected:', {
+          name: imageFile.name,
+          type: imageFile.type,
+          size: imageFile.size,
+          lastModified: new Date(imageFile.lastModified).toISOString()
+        });
+        formData.append('image', imageFile);
+      } else {
+        console.log('No image file selected');
       }
 
-      await createProduct(formData);
+      // Log form data before submission
+      console.log('Form data to be submitted:', Object.fromEntries(formData.entries()));
+
+      const response = await createProduct(formData);
+      console.log('Create product response:', response.data);
       onSuccess();
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating product:', error);
+      if (error.response?.data) {
+        console.error('Error response:', error.response.data);
+      }
     }
   };
 

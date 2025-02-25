@@ -53,6 +53,7 @@ export default function QuoteForm({ productName, onClose }: QuoteFormProps) {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              placeholder={t('form.name')}
             />
           </div>
 
@@ -67,6 +68,7 @@ export default function QuoteForm({ productName, onClose }: QuoteFormProps) {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              placeholder={t('form.phone')}
             />
           </div>
 
@@ -80,6 +82,7 @@ export default function QuoteForm({ productName, onClose }: QuoteFormProps) {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
               value={formData.company}
               onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+              placeholder={t('form.company')}
             />
           </div>
 
@@ -94,6 +97,7 @@ export default function QuoteForm({ productName, onClose }: QuoteFormProps) {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              placeholder={t('form.email')}
             />
           </div>
 
@@ -107,6 +111,7 @@ export default function QuoteForm({ productName, onClose }: QuoteFormProps) {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
               value={formData.comments}
               onChange={(e) => setFormData({ ...formData, comments: e.target.value })}
+              placeholder={t('form.comments')}
             ></textarea>
           </div>
 

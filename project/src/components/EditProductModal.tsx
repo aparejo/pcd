@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { X, Upload } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { updateProduct, getCategories } from '../lib/api';
+import { updateProduct, getCategories, API_URL } from '../lib/api';
 import { useEffect, useState } from 'react';
 
 interface EditProductModalProps {
@@ -139,14 +139,31 @@ export default function EditProductModal({ onClose, onSuccess, product }: EditPr
         return;
       }
 
+      // Handle image upload
       if (data.image?.[0]) {
-        formData.append('image', data.image[0]);
+        const imageFile = data.image[0];
+        console.log('Image file selected:', {
+          name: imageFile.name,
+          type: imageFile.type,
+          size: imageFile.size,
+          lastModified: new Date(imageFile.lastModified).toISOString()
+        });
+        formData.append('image', imageFile);
+      } else {
+        console.log('No new image file selected');
       }
 
-      // Log request details for debugging
-      console.log('Update request:', {
+      // Log complete form data for debugging
+      console.log('Form data to be submitted:', {
         productId: product.id,
-        formData: Object.fromEntries(formData.entries())
+        formData: Object.fromEntries(formData.entries()),
+        hasImage: formData.has('image'),
+        imageDetails: data.image?.[0] ? {
+          name: data.image[0].name,
+          type: data.image[0].type,
+          size: data.image[0].size,
+          lastModified: new Date(data.image[0].lastModified).toISOString()
+        } : 'No new image'
       });
 
       const response = await updateProduct(productId, formData);
@@ -156,7 +173,9 @@ export default function EditProductModal({ onClose, onSuccess, product }: EditPr
       onClose();
     } catch (error: any) {
       console.error('Error updating product:', error);
-      console.error('Error details:', error.response?.data);
+      if (error.response?.data) {
+        console.error('Error response:', error.response.data);
+      }
       console.error('Product ID:', product.id);
       
       let errorMessage = 'Failed to update product. ';
@@ -288,9 +307,13 @@ export default function EditProductModal({ onClose, onSuccess, product }: EditPr
               <div className="mb-4">
                 <p className="text-sm text-gray-500 mb-2">Current image:</p>
                 <img
-                  src={product.image}
+                  src={`${API_URL}${product.image}`}
                   alt={product.title}
                   className="h-32 w-32 object-cover rounded-lg"
+                  onError={(e) => {
+                    console.error('Error loading image:', e);
+                    e.currentTarget.src = 'https://via.placeholder.com/150';
+                  }}
                 />
               </div>
             )}
@@ -309,6 +332,17 @@ export default function EditProductModal({ onClose, onSuccess, product }: EditPr
                       accept="image/*"
                       className="sr-only"
                       {...register('image')}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          console.log('Selected image:', {
+                            name: file.name,
+                            type: file.type,
+                            size: file.size,
+                            lastModified: new Date(file.lastModified).toISOString()
+                          });
+                        }
+                      }}
                     />
                   </label>
                   <p className="pl-1">or drag and drop</p>
